@@ -19,7 +19,7 @@ namespace IceCreamTycoon
         // Game Sprites
         Stand mainStand;
         Sprite floor;
-        Sprite up, down;
+        Sprite up, down, shop_btn, shop;
         CustomerFlow customers;
         Season season;
 
@@ -55,6 +55,7 @@ namespace IceCreamTycoon
         bool isHovering;
         bool isHovering2;
         bool gainedCash;
+        bool shopOpened;
 
         #endregion
 
@@ -66,6 +67,8 @@ namespace IceCreamTycoon
             floor = new Sprite(Content.Load<Texture2D>("scenary"), new Vector2(500, 300), 1);
             up = new Sprite(Content.Load<Texture2D>("up"), new Vector2(165, 57), .8f);
             down = new Sprite(Content.Load<Texture2D>("down"), new Vector2(165, 66), .8f); 
+            shop_btn = new Sprite(Content.Load<Texture2D>("shop_btn"), new Vector2(945, 580), 0.5f);
+            shop = new Sprite(Content.Load<Texture2D>("shop"), new Vector2(850, 238), 1f); 
             font = Content.Load<SpriteFont>("SpriteFont1");
             customers = new CustomerFlow();
             headlines = new Headlines();
@@ -96,7 +99,7 @@ namespace IceCreamTycoon
             lastMouseState = currentMouseState;
             currentMouseState = Mouse.GetState();
 
-            //Console.WriteLine("X: " + Mouse.GetState().X + " Y: " + Mouse.GetState().Y);
+            Console.WriteLine("X: " + Mouse.GetState().X + " Y: " + Mouse.GetState().Y);
 
             customers.CalculateCustomerFlow();
             PurchaseIceCream(gameTime, customers.CalculateCustomerFlow());
@@ -105,6 +108,18 @@ namespace IceCreamTycoon
 
             CreateButton();
             TestHoveringStand();
+
+            if (shopOpened)
+            {
+                UpdateShop(gameTime);
+            }
+
+            if (Mouse.GetState().X > 896 && Mouse.GetState().X < 993 &&
+                Mouse.GetState().Y > 568 && Mouse.GetState().Y < 592)
+            {
+                if (lastMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed)
+                    shopOpened = true;
+            }
 
             if (Mouse.GetState().X > 160 && Mouse.GetState().X < 168 &&
                 Mouse.GetState().Y > 54 && Mouse.GetState().Y < 60)
@@ -168,10 +183,16 @@ namespace IceCreamTycoon
 
             up.Draw(spriteBatch);
             down.Draw(spriteBatch);
+            shop_btn.Draw(spriteBatch);
             spriteBatch.DrawString(font, "Money: $" + HUD.money.ToString(), pos, Color.Black);
             spriteBatch.DrawString(font, "Popularity: " + HUD.popularity.ToString(), new Vector2(10, 30), Color.Black);
             spriteBatch.DrawString(font, "Temperature: " + HUD.temperature.ToString() + " C", new Vector2(10, 50), Color.Black);
             spriteBatch.DrawString(font, "Estimated Daily Customers: " + customers.noOfCustomers.ToString(), new Vector2(10, 70), Color.Black);
+
+            if (shopOpened)
+            {
+                shop.Draw(spriteBatch);
+            }
 
             spriteBatch.End();
 
@@ -241,6 +262,16 @@ namespace IceCreamTycoon
                     Console.WriteLine(purchases.ToString());
                     timer2 = 0f;
                 }
+            }
+        }
+
+        private void UpdateShop(GameTime gameTime)
+        {
+            if (Mouse.GetState().X > 966 && Mouse.GetState().X < 994 &&
+                Mouse.GetState().Y > 39 && Mouse.GetState().Y < 67)
+            {
+                if (lastMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed)
+                    shopOpened = false;
             }
         }
     }

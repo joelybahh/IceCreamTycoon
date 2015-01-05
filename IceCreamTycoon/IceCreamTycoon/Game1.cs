@@ -13,7 +13,6 @@ namespace IceCreamTycoon
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        // Commit
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
