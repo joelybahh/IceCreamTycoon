@@ -14,7 +14,7 @@ namespace IceCreamTycoon
 {
     public class Sprite
     {
-        #region Variables
+            #region Variables
 
         public Texture2D texture;
         public Vector2 position;
@@ -41,6 +41,11 @@ namespace IceCreamTycoon
             this.scale = scale;
             crop = texture.Bounds;
             origin = new Vector2(crop.Width / 2, crop.Height / 2);
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+
         }
 
         /// <summary>

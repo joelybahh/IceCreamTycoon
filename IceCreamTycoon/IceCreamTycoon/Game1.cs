@@ -15,6 +15,7 @@ namespace IceCreamTycoon
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Rectangle renderArea;
 
         // static variables
         public static bool exitGame = false;
@@ -47,6 +48,7 @@ namespace IceCreamTycoon
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             font = Content.Load<SpriteFont>("MenuFont");
+
             GameStateManager.LoadContent(Content);
             GameStateManager.Services = this.Services;
             GameStateManager.SwitchToSplash();
@@ -55,6 +57,12 @@ namespace IceCreamTycoon
         protected override void UnloadContent()
         {
             GameStateManager.UnloadContent(Content);
+        }
+
+        void videoPlayer_OnVideoComplete(object sender, EventArgs e)
+        {
+            // Close the app once the video has finished
+            Exit();
         }
 
         protected override void Update(GameTime gameTime)

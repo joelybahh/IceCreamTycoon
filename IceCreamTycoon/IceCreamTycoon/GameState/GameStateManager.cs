@@ -16,6 +16,8 @@ namespace IceCreamTycoon
     {
         static GameState currentGameState;
         public static IServiceProvider Services;
+    
+
 
         /// <summary>
         /// Load Content Function
@@ -66,9 +68,9 @@ namespace IceCreamTycoon
         {
             currentGameState = new GSMenu();
         } //
-        public static void SwitchToPlay()           // all the screens            |
+        public static void SwitchToPlay(GameTime gameTime)           // all the screens            |
         {
-            currentGameState = new GSPlay();
+            currentGameState = new GSPlay(gameTime);
         } //
         public static void SwitchToOptions()        // simply add a static        |
         {
@@ -88,7 +90,7 @@ namespace IceCreamTycoon
         } //
         public static void SwitchToCredits()        // screen you want to add.    |
         {
-            currentGameState = new GSControls();
+            currentGameState = new GSCredits();
         } //
         // ------------------------------------------------------------------------
     }

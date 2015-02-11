@@ -22,7 +22,7 @@ namespace IceCreamTycoon
 
         public override void Update(GameTime gameTime)
         {
-            DeveloperCommands();
+            DeveloperCommands(gameTime);
             base.Update(gameTime);
         }
 
@@ -31,10 +31,10 @@ namespace IceCreamTycoon
             base.Draw(spriteBatch);
         }
 
-        private static void DeveloperCommands()
+        private static void DeveloperCommands(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.P))
-                GameStateManager.SwitchToPlay();
+                GameStateManager.SwitchToPlay(gameTime);
             if (Keyboard.GetState().IsKeyDown(Keys.M))
                 GameStateManager.SwitchToMenu();
             if (Keyboard.GetState().IsKeyDown(Keys.S))

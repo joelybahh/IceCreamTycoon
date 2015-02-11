@@ -7,8 +7,10 @@ namespace IceCreamTycoon
 {
     public class HUD
     {
-        public static int temperature = 32;
-        public static int money = 100;
-        public static int popularity = 10;
+        public static int temperature = 33;
+        public static int money = 10;
+        public static int popularity = 0;
+        public static int NumberOfIceCreams = 25;
+        public static int price = 2;
     }
 }

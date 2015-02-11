@@ -12,24 +12,32 @@ using Microsoft.Xna.Framework.Media;
 
 namespace IceCreamTycoon
 {
-    class GSOptions : GameState
+    class GSCredits : GameState
     {
 
-        public GSOptions()
+        public GSCredits()
         {
 
+        }
+
+        public override void LoadContent(ContentManager Content)
+        {
+            base.LoadContent(Content);
+        }
+
+        public override void UnloadContent(ContentManager Content)
+        {
+            base.UnloadContent(Content);
         }
 
         public override void Update(GameTime gameTime)
         {
             DeveloperCommands(gameTime);
-
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            
             base.Draw(spriteBatch);
         }
 

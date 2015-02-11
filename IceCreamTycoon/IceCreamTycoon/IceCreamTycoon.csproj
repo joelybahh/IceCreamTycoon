@@ -63,6 +63,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DirectShowLib-2005, Version=2.0.0.0, Culture=neutral, PublicKeyToken=67e7b740cdfc2d3f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\DirectShowLib-2005.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
@@ -110,6 +114,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gameplay\Customer.cs" />
     <Compile Include="Gameplay\CustomerFlow.cs" />
     <Compile Include="Gameplay\Headlines.cs" />
     <Compile Include="Gameplay\HUD.cs" />
@@ -119,6 +124,7 @@
     <Compile Include="GameState\GameState.cs" />
     <Compile Include="GameState\GameStateManager.cs" />
     <Compile Include="GameState\Screens\GSControls.cs" />
+    <Compile Include="GameState\Screens\GSCredits.cs" />
     <Compile Include="GameState\Screens\GSMenu.cs" />
     <Compile Include="GameState\Screens\GSOptions.cs" />
     <Compile Include="GameState\Screens\GSPause.cs" />
@@ -134,6 +140,7 @@
     <Compile Include="Text\Text.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DirectShowLib-2005.dll" />
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png" />
   </ItemGroup>

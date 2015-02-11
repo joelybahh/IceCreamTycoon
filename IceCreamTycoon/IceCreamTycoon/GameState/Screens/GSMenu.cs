@@ -103,7 +103,7 @@ namespace IceCreamTycoon
             Console.WriteLine("X: " + mouse.X + " Y: " + mouse.Y);
 
             CheckIfHovering();
-            UpdateSelection();
+            UpdateSelection(gameTime);
 
             base.Update(gameTime);
         }
@@ -111,9 +111,9 @@ namespace IceCreamTycoon
         /// <summary>
         /// Updating Selection
         /// </summary>
-        private void UpdateSelection()
+        private void UpdateSelection(GameTime gameTime)
         {
-            DeveloperCommands();
+            DeveloperCommands(gameTime);
 
             #region PlayButton
 
@@ -126,7 +126,7 @@ namespace IceCreamTycoon
                 //                              |                                |
                 if (mouse.LeftButton == ButtonState.Pressed)        // Checking to see if           |
                 {                                                   // you have left clicked,       |
-                    GameStateManager.SwitchToPlay();                // if so, switch to playScreen. |                                              
+                    GameStateManager.SwitchToPlay(gameTime);                // if so, switch to playScreen. |                                              
                 }                                                   //-------------------------------
 
             }
@@ -150,7 +150,7 @@ namespace IceCreamTycoon
 
                 if (mouse.LeftButton == ButtonState.Pressed)
                 {
-                    transitioning = true;
+                    GameStateManager.SwitchToOptions();
                 } 
             }
             else
@@ -296,10 +296,10 @@ namespace IceCreamTycoon
             return origin;
         }
 
-        private static void DeveloperCommands()
+        private static void DeveloperCommands(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.P))
-                GameStateManager.SwitchToPlay();
+                GameStateManager.SwitchToPlay(gameTime);
             if (Keyboard.GetState().IsKeyDown(Keys.M))
                 GameStateManager.SwitchToMenu();
             if (Keyboard.GetState().IsKeyDown(Keys.S))
