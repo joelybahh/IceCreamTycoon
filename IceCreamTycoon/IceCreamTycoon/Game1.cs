@@ -19,8 +19,6 @@ namespace IceCreamTycoon
 
         // static variables
         public static bool exitGame = false;
-        public static bool music = true;
-        public static bool sfx = true;
         public static int screenHeight;
         public static int screenWidth;
         public static SpriteFont font;

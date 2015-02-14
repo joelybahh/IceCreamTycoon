@@ -118,6 +118,7 @@
     <Compile Include="Gameplay\CustomerFlow.cs" />
     <Compile Include="Gameplay\Headlines.cs" />
     <Compile Include="Gameplay\HUD.cs" />
+    <Compile Include="Gameplay\IceCream.cs" />
     <Compile Include="Gameplay\Season.cs" />
     <Compile Include="Gameplay\Stand.cs" />
     <Compile Include="Gameplay\Temperature.cs" />

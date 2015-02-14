@@ -32,9 +32,10 @@ namespace IceCreamTycoon
 
         Random rand = new Random();
 
-        public Customer(Texture2D texture, Vector2 position, float scale, int chance, int moneyOnHand, int maxWillSpend)
+        public Customer(Texture2D texture, Vector2 position, float scale, int chance, int moneyOnHand, int maxWillSpend, IceCream.IceCreamType preference)
             : base(texture, position, scale)
         {
+            this.preference = preference.ToString();
             this.texture = texture;
             this.position = position;
             this.scale = scale;
@@ -95,7 +96,7 @@ namespace IceCreamTycoon
 
                 #endregion
 
-                if (!atStand && position.X >= 500 && position.X <= 700 && !wasAtStand)
+                if (!atStand && position.X >= 500 && position.X <= 700 && !wasAtStand && HUD.NumberOfIceCream > 0)
                 {
                     atStand = true;
                 }
@@ -111,10 +112,28 @@ namespace IceCreamTycoon
 
                     if (timer >= max)
                     {
-                        atStand = false;
-                        wasAtStand = true;
-                        HUD.money += HUD.price;
+                        if (preference.Equals(IceCream.IceCreamType.Chocolate.ToString()) && HUD.ChocolateIceCream > 0)
+                        {
+                            atStand = false;
+                            wasAtStand = true;
+                            HUD.money += HUD.price;
+                            HUD.NumberOfIceCream--;
+                            HUD.ChocolateIceCream--;
+                        }
+                        else
+                        {
+                            atStand = false;
+                            wasAtStand = true;
+                            customerSpeed = 5;
+                            HUD.popularity--;
+                        }
                     }
+                }
+
+                if (atStand && HUD.NumberOfIceCream == 0)
+                {
+                    isMoving = true;
+                    atStand = false;
                 }
 
                 if (wasAtStand)

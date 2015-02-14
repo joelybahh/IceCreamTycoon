@@ -17,6 +17,8 @@ namespace IceCreamTycoon
         #region Variables 
 
         Texture2D cust;
+        Texture2D stand;
+        Texture2D standTierOne;
 
         // Game Sprites
         Stand mainStand;
@@ -31,6 +33,9 @@ namespace IceCreamTycoon
 
         //Headlines
         Headlines headlines;
+
+        //
+        IceCream chocolateIceCream, stawberryIceCream, vanillaIceCream;
 
         // Keyboard / Mouse
         MouseState currentMouseState;
@@ -58,7 +63,7 @@ namespace IceCreamTycoon
         float max;
 
         float timerC;
-        float maxTimerC = 1500f;
+        float maxTimerC = 2500f;
 
         // Booleans
         bool isHovering;
@@ -66,10 +71,15 @@ namespace IceCreamTycoon
         bool gainedCash;
         bool shopOpened;
 
+        bool hoveringInvButton;
+
+        bool upgradeOne = true;
+
         bool b1 = true;
 
         int totalC = 0;
         int randomTexture;
+        int prevTexture;
 
         Random rand = new Random();
 
@@ -82,15 +92,27 @@ namespace IceCreamTycoon
         // Constructor
         public GSPlay(GameTime gameTime)
         {
-            mainStand = new Stand(Content.Load<Texture2D>("cart2"), new Vector2(500, 405), 0.5f);
+            if (upgradeOne)
+            {
+                stand = Content.Load<Texture2D>("cart3");
+            }
+            else
+            {
+                stand = Content.Load<Texture2D>("cart2");
+            }
+   
+            mainStand = new Stand(stand, new Vector2(500, 305), 0.5f);
             bgMusic = Content.Load<Song>("music");
-            floor = new Sprite(Content.Load<Texture2D>("scenary"), new Vector2(500, 300), 1);
+            floor = new Sprite(Content.Load<Texture2D>("floor2"), new Vector2(500, 300), 1);
             up = new Sprite(Content.Load<Texture2D>("up"), new Vector2(165, 57), .8f);
             down = new Sprite(Content.Load<Texture2D>("down"), new Vector2(165, 66), .8f); 
             shop_btn = new Sprite(Content.Load<Texture2D>("shop_btn"), new Vector2(945, 580), 0.5f);
             shop = new Sprite(Content.Load<Texture2D>("shop"), new Vector2(850, 238), 1f); 
             font = Content.Load<SpriteFont>("SpriteFont1");
-            cust = Content.Load<Texture2D>("cart2"); 
+            cust = Content.Load<Texture2D>("cart2");
+            chocolateIceCream = new IceCream("Chocolate", HUD.ChocolateIceCream, Content.Load<Texture2D>("chocolate"), IceCream.IceCreamType.Chocolate);
+            stawberryIceCream = new IceCream("Chocolate", HUD.ChocolateIceCream, Content.Load<Texture2D>("chocolate"), IceCream.IceCreamType.Strawberry);
+            vanillaIceCream = new IceCream("Chocolate", HUD.ChocolateIceCream, Content.Load<Texture2D>("chocolate"), IceCream.IceCreamType.Vanilla);
             customers = new CustomerFlow();
             customer = new List<Customer>();
             headlines = new Headlines();
@@ -101,7 +123,6 @@ namespace IceCreamTycoon
 
             up.color = Color.Black;
             down.color = Color.Black;
-
             MediaPlayer.Play(bgMusic);
             MediaPlayer.IsRepeating = true;
 
@@ -122,7 +143,7 @@ namespace IceCreamTycoon
         {
             randomTexture = random.Next(0, 8);
 
-            //Console.WriteLine("X: " + Mouse.GetState().X + " Y: " + Mouse.GetState().Y);
+            Console.WriteLine("X: " + Mouse.GetState().X + " Y: " + Mouse.GetState().Y);
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             timerC += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
@@ -139,6 +160,11 @@ namespace IceCreamTycoon
             TestHoveringStand();
             UpdateShop(gameTime);
             LoadCustomers(gameTime);
+
+            if (HUD.NumberOfIceCream <= 0)
+            {
+                upgradeOne = true;
+            }
 
             if (b1 == true)
             {
@@ -166,6 +192,25 @@ namespace IceCreamTycoon
                 if (lastMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed)
                     HUD.temperature -= 1;
             }
+
+
+            // ----------------------------------------------------------------------------
+
+
+            if (Mouse.GetState().X > 741 && Mouse.GetState().X < 818 &&
+                Mouse.GetState().Y > 122 && Mouse.GetState().Y < 238)
+            {
+                if (lastMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed)
+                {
+                    if (HUD.money >= 4)
+                    {
+                        chocolateIceCream.AddItems();
+                        HUD.money -= 4;
+                    } 
+                }
+            }
+
+            // ----------------------------------------------------------------------------
 
             if (Keyboard.GetState().IsKeyDown(Keys.OemPlus))
             {
@@ -201,10 +246,18 @@ namespace IceCreamTycoon
             spriteBatch.DrawString(font, "Popularity: " + HUD.popularity.ToString(), new Vector2(10, 30), Color.Black);
             spriteBatch.DrawString(font, "Temperature: " + HUD.temperature.ToString() + " C", new Vector2(10, 50), Color.Black);
             spriteBatch.DrawString(font, "Estimated Daily Customers: " + customers.noOfCustomers.ToString(), new Vector2(10, 70), Color.Black);
+            spriteBatch.DrawString(font, "Ice-Cream Stock: " + HUD.NumberOfIceCream.ToString(), new Vector2(10, 90), Color.Black);
+            spriteBatch.DrawString(font, "Chocolate Ice-Cream: " + HUD.ChocolateIceCream.ToString(), new Vector2(10, 120), Color.Black);
+
+            stawberryIceCream.color = Color.Pink;
+            vanillaIceCream.color = Color.Black;
 
             if (shopOpened)
             {
                 shop.Draw(spriteBatch);
+                chocolateIceCream.Draw(spriteBatch, new Vector2(739, 120));
+                stawberryIceCream.Draw(spriteBatch, new Vector2(739, 200));
+                vanillaIceCream.Draw(spriteBatch, new Vector2(739, 280));
             }
 
             spriteBatch.End();
@@ -241,12 +294,8 @@ namespace IceCreamTycoon
 
         private void CreateButton()                     // Creates a button
         {
-            if (Mouse.GetState().X > 393 && Mouse.GetState().X < 568 &&
-                Mouse.GetState().Y > 400 && Mouse.GetState().Y < 506 ||
-                Mouse.GetState().X > 476 && Mouse.GetState().X < 486 &&
-                Mouse.GetState().Y > 317 && Mouse.GetState().Y < 405 ||
-                Mouse.GetState().X > 567 && Mouse.GetState().X < 616 &&
-                Mouse.GetState().Y > 407 && Mouse.GetState().Y < 425)
+            if (Mouse.GetState().X > 368 && Mouse.GetState().X < 600 &&
+                Mouse.GetState().Y > 318 && Mouse.GetState().Y < 556)
             {
                 isHovering = true;
             }
@@ -325,7 +374,6 @@ namespace IceCreamTycoon
         public void LoadCustomers(GameTime gameTime)
         {
             int randX = rand.Next(-200, -50);
-
             int newValue = rand.Next(0, 4);
 
             bool spawnCustomer = false;
@@ -344,41 +392,42 @@ namespace IceCreamTycoon
 
             if (customer.Count() < totalC && spawnCustomer)
             {
-                if (randomTexture == 1)
+                if (randomTexture == 1 && prevTexture != randomTexture)
                 {
-                    customer.Add(new Customer(Content.Load<Texture2D>("Atheist_Male"), new Vector2(randX, 500), 0.15f, newValue,6,2));
+                    customer.Add(new Customer(Content.Load<Texture2D>("Atheist_Male"), new Vector2(randX, 420), 0.23f, newValue, 6, 2, IceCream.IceCreamType.Chocolate));
                 }
-                else if (randomTexture == 2)
+                else if (randomTexture == 2 && prevTexture != randomTexture)
                 {
-                    customer.Add(new Customer(Content.Load<Texture2D>("Cat_Burglar"), new Vector2(randX, 500), 0.17f, newValue,12,1));
+                    customer.Add(new Customer(Content.Load<Texture2D>("Cat_Burglar"), new Vector2(randX, 420), 0.23f, newValue, 12, 1, IceCream.IceCreamType.Chocolate));
                 }
-                else if (randomTexture == 3)
+                else if (randomTexture == 3 && prevTexture != randomTexture)
                 {
-                    customer.Add(new Customer(Content.Load<Texture2D>("Santa"), new Vector2(randX, 500), 0.17f, newValue,100, 50));
+                    customer.Add(new Customer(Content.Load<Texture2D>("Santa"), new Vector2(randX, 420), 0.23f, newValue, 100, 50, IceCream.IceCreamType.Chocolate));
                 }
-                else if (randomTexture == 4)
+                else if (randomTexture == 4 && prevTexture != randomTexture)
                 {
-                    customer.Add(new Customer(Content.Load<Texture2D>("Serial_Killer_Male"), new Vector2(randX, 500), 0.15f, newValue, 10, 0));
+                    customer.Add(new Customer(Content.Load<Texture2D>("Serial_Killer_Male"), new Vector2(randX, 420), 0.23f, newValue, 10, 0, IceCream.IceCreamType.Chocolate));
                 }
-                else if (randomTexture == 5)
+                else if (randomTexture == 5 && prevTexture != randomTexture)
                 {
-                    customer.Add(new Customer(Content.Load<Texture2D>("Singer_Female"), new Vector2(randX, 500), 0.17f, newValue, 32, 2));
+                    customer.Add(new Customer(Content.Load<Texture2D>("Singer_Female"), new Vector2(randX, 420), 0.26f, newValue, 32, 2, IceCream.IceCreamType.Chocolate));
                 }
-                else if (randomTexture == 6)
+                else if (randomTexture == 6 && prevTexture != randomTexture)
                 {
-                    customer.Add(new Customer(Content.Load<Texture2D>("Superhero"), new Vector2(randX, 500), 0.17f, newValue, 50, 3));
+                    customer.Add(new Customer(Content.Load<Texture2D>("Superhero"), new Vector2(randX, 420), 0.26f, newValue, 50, 3, IceCream.IceCreamType.Chocolate));
                 }
-                else if (randomTexture == 7)
+                else if (randomTexture == 7 && prevTexture != randomTexture)
                 {
-                    customer.Add(new Customer(Content.Load<Texture2D>("Time_Travler"), new Vector2(randX, 500), 0.17f, newValue,90,9));
+                    customer.Add(new Customer(Content.Load<Texture2D>("Time_Travler"), new Vector2(randX, 420), 0.23f, newValue, 90, 9, IceCream.IceCreamType.Chocolate));
                 }
-                else if (randomTexture == 8)
+                else if (randomTexture == 8 && prevTexture != randomTexture)
                 {
-                    customer.Add(new Customer(Content.Load<Texture2D>("Wizard_Male"), new Vector2(randX, 500), 0.17f, newValue,67, 5));
+                    customer.Add(new Customer(Content.Load<Texture2D>("Wizard_Male"), new Vector2(randX, 420), 0.23f, newValue, 67, 5, IceCream.IceCreamType.Chocolate));
                 }
+
                 
             }
-
+            prevTexture = randomTexture;
 
             for (int i = 0; i < customer.Count; i++)
             {
